@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "quanlibida", "quanlibida\quanlibida.csproj", "{34AFF0C0-49D8-40B5-B5FC-4CEBD1DE7454}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{36CFF913-4D1F-4E3C-9A24-352BCD29C930}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessAccessLayer", "BusinessAccessLayer\BusinessAccessLayer.csproj", "{2F77F79A-68AB-42E0-B6EF-31F358E05A39}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34AFF0C0-49D8-40B5-B5FC-4CEBD1DE7454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34AFF0C0-49D8-40B5-B5FC-4CEBD1DE7454}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34AFF0C0-49D8-40B5-B5FC-4CEBD1DE7454}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34AFF0C0-49D8-40B5-B5FC-4CEBD1DE7454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36CFF913-4D1F-4E3C-9A24-352BCD29C930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36CFF913-4D1F-4E3C-9A24-352BCD29C930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36CFF913-4D1F-4E3C-9A24-352BCD29C930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36CFF913-4D1F-4E3C-9A24-352BCD29C930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F77F79A-68AB-42E0-B6EF-31F358E05A39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F77F79A-68AB-42E0-B6EF-31F358E05A39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F77F79A-68AB-42E0-B6EF-31F358E05A39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F77F79A-68AB-42E0-B6EF-31F358E05A39}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

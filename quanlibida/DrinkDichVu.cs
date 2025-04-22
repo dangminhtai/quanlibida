@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using BusinessAccessLayer;
+
+namespace quanlibida
+{
+    public partial class DrinkDichVu : Form
+    {
+        BAL bllDV= new
+            BAL();
+        public DrinkDichVu()
+        {
+            InitializeComponent();
+        }
+
+        private void DrinkDichVu_Load(object sender, EventArgs e)
+        {
+            LoadData();
+        }
+        private void LoadData()
+        {
+            try
+            {
+                DataSet ds = bllDV.LayDichVuTheoThucUong();
+                dgvDrink.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void dgvDrinkDichVu_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+    }
+}

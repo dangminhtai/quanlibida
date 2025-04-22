@@ -1,0 +1,644 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{34AFF0C0-49D8-40B5-B5FC-4CEBD1DE7454}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>quanlibida</RootNamespace>
+    <AssemblyName>quanlibida</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BusinessAccessLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BusinessAccessLayer\bin\Debug\BusinessAccessLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.6.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.6.0\lib\net40\QRCoder.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bookingquery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Bookingquery.Designer.cs">
+      <DependentUpon>Bookingquery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dichvuquery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dichvuquery.Designer.cs">
+      <DependentUpon>Dichvuquery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DichVuTheoGia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DichVuTheoGia.Designer.cs">
+      <DependentUpon>DichVuTheoGia.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DichVuTheoTen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DichVuTheoTen.Designer.cs">
+      <DependentUpon>DichVuTheoTen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DrinkDichVu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DrinkDichVu.Designer.cs">
+      <DependentUpon>DrinkDichVu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FoodDichVu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FoodDichVu.Designer.cs">
+      <DependentUpon>FoodDichVu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmAbout.Designer.cs">
+      <DependentUpon>FrmAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmBill.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBill.Designer.cs">
+      <DependentUpon>FrmBill.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmBooking.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBooking.Designer.cs">
+      <DependentUpon>FrmBooking.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmDichVu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDichVu.Designer.cs">
+      <DependentUpon>FrmDichVu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmLogin.Designer.cs">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmStaff.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmStaff.Designer.cs">
+      <DependentUpon>FrmStaff.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmUser.Designer.cs">
+      <DependentUpon>FrmUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KhachHangTheoDiaChi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KhachHangTheoDiaChi.Designer.cs">
+      <DependentUpon>KhachHangTheoDiaChi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KhachHangTheoTen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KhachHangTheoTen.Designer.cs">
+      <DependentUpon>KhachHangTheoTen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LayNhanVienTheoTen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayNhanVienTheoTen.Designer.cs">
+      <DependentUpon>LayNhanVienTheoTen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LuongNhanVienLonHon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LuongNhanVienLonHon.Designer.cs">
+      <DependentUpon>LuongNhanVienLonHon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LuongNhanVienNhoHon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LuongNhanVienNhoHon.Designer.cs">
+      <DependentUpon>LuongNhanVienNhoHon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NhanVienTheoNam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NhanVienTheoNam.Designer.cs">
+      <DependentUpon>NhanVienTheoNam.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainFrm.Designer.cs">
+      <DependentUpon>MainFrm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FrmRevenue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmRevenue.Designer.cs">
+      <DependentUpon>FrmRevenue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Revenuequery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Revenuequery.Designer.cs">
+      <DependentUpon>Revenuequery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Staffquery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Staffquery.Designer.cs">
+      <DependentUpon>Staffquery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TableType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TableType.Designer.cs">
+      <DependentUpon>TableType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimePlay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimePlay.Designer.cs">
+      <DependentUpon>TimePlay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Userquery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Userquery.Designer.cs">
+      <DependentUpon>Userquery.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Bookingquery.resx">
+      <DependentUpon>Bookingquery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dichvuquery.resx">
+      <DependentUpon>Dichvuquery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DichVuTheoGia.resx">
+      <DependentUpon>DichVuTheoGia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DichVuTheoTen.resx">
+      <DependentUpon>DichVuTheoTen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DrinkDichVu.resx">
+      <DependentUpon>DrinkDichVu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FoodDichVu.resx">
+      <DependentUpon>FoodDichVu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmAbout.resx">
+      <DependentUpon>FrmAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmBill.resx">
+      <DependentUpon>FrmBill.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmBooking.resx">
+      <DependentUpon>FrmBooking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmDichVu.resx">
+      <DependentUpon>FrmDichVu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmLogin.resx">
+      <DependentUpon>FrmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmStaff.resx">
+      <DependentUpon>FrmStaff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmUser.resx">
+      <DependentUpon>FrmUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KhachHangTheoDiaChi.resx">
+      <DependentUpon>KhachHangTheoDiaChi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KhachHangTheoTen.resx">
+      <DependentUpon>KhachHangTheoTen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayNhanVienTheoTen.resx">
+      <DependentUpon>LayNhanVienTheoTen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LuongNhanVienLonHon.resx">
+      <DependentUpon>LuongNhanVienLonHon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LuongNhanVienNhoHon.resx">
+      <DependentUpon>LuongNhanVienNhoHon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NhanVienTheoNam.resx">
+      <DependentUpon>NhanVienTheoNam.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainFrm.resx">
+      <DependentUpon>MainFrm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="FrmRevenue.resx">
+      <DependentUpon>FrmRevenue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Revenuequery.resx">
+      <DependentUpon>Revenuequery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Staffquery.resx">
+      <DependentUpon>Staffquery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TableType.resx">
+      <DependentUpon>TableType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimePlay.resx">
+      <DependentUpon>TimePlay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Userquery.resx">
+      <DependentUpon>Userquery.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bida.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bida2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bidaform.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\manage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bill.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\report.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\customer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\food.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\order.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logout.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\banbida.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bidaball.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bidaball2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bida3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\table.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\table1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bidabackground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-facebook-logo-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-zalo-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-github-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bida21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icons8-github-961.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmLogin1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmlogin2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmlogin3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmLogin4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmLogin5.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmLogin6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmLogin7.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frmLogin8.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hidepass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\showpass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qlnv1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qlkh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tkdt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fd2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tkdt2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\oldst.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\newst.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\highsl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lowsl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\namest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tbview2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stnam.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tbview21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mnhigh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mnlow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\adcustomer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\namecs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dayrv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\allrv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\foodrv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drinkrv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tablerv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tphigh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tplow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tp1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvhigh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvlow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvlow1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvhigh1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\id.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\name.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\salary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\date.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gmail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\idkh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\namekh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\phonekh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\phonekh1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\addresskh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\moneykh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\idrevenue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dayrvi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\idkh1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\tablervi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\food2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bookingid.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\timest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\timeen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\orderdv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\table2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\food3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drink3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvhigh2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvlow2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvtheogia.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dvname.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\foodname.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\foodtype.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\foodprice.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bill1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\version.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\6.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\develop2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\33.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\about1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logout1.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
