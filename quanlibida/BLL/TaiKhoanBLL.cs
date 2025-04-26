@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace BLL
 {
-    public class TaiKhoanBLL
+    public class BLL_TaiKhoan
     {
         public bool DangNhap(string tenDangNhap, string matKhau)
         {
@@ -19,6 +19,7 @@ namespace BLL
                 return db.TaiKhoans.Any(tk => tk.TenDangNhap == tenDangNhap);
             }
         }
+
 
     }
 }

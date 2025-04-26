@@ -10,5 +10,6 @@ namespace DAL
         public MyDbContext() : base("name=Quanlybida_db") { }
 
         public DbSet<TaiKhoan> TaiKhoans { get; set; }
+        public DbSet<DichVu> DichVus { get; set; }
     }
 }

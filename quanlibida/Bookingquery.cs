@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLL;
 namespace quanlibida
 {
     public partial class Bookingquery : Form
