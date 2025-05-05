@@ -3,12 +3,13 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLRevenue;
+using DAL;
 namespace quanlibida
 {
     public partial class FrmRevenue : Form
     {
-        BAL dbst;
+        RevenueBLL dbst = new RevenueBLL();
         // Đối tượng đưa dữ liệu vào DataTable dtRevenue 
         public static DataTable dtRevenue { get; set; }
         // Khai báo biến kiểm tra việc Thêm hay Sửa dữ liệu 
@@ -16,7 +17,7 @@ namespace quanlibida
         public FrmRevenue()
         {
             InitializeComponent();
-            dbst = new BAL();
+            
         }
         void LoadData()
         {
@@ -26,9 +27,8 @@ namespace quanlibida
                 // Vận chuyển dữ liệu vào DataTable dtRevenue 
                 dtRevenue = new DataTable();
                 dtRevenue.Clear();
-                dtRevenue = dbst.LayDoanhThu().Tables[0];
-                // Đưa dữ liệu lên DataGridView  
-                dgvRevenue.DataSource = dtRevenue;
+                var listRevenue = dbst.LayDoanhThu(); // Trả về List<Revenue> (hoặc đối tượng phù hợp)
+                dgvRevenue.DataSource = listRevenue;
 
                 // Xóa trống các đối tượng trong Panel 
 
@@ -127,65 +127,83 @@ namespace quanlibida
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            string err = "";
             if (Them)
             {
                 try
                 {
-                    // Thêm mới doanh thu
-                    bool f = dbst.ThemDoanhThu(ref err,
-                        int.Parse(this.txtRevenueID.Text),
-                        DateTime.Parse(this.txtRevenueDate.Text),
-                        decimal.Parse(this.txtTableRevenue.Text),
-                        decimal.Parse(this.txtFoodRevenue.Text),
-                        decimal.Parse(this.txtDrinkRevenue.Text)
-                    );
+                    // Kiểm tra RevenueID không rỗng và hợp lệ
+                    if (string.IsNullOrWhiteSpace(txtRevenueID.Text))
+                    {
+                        MessageBox.Show("RevenueID không được để trống.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    if (!int.TryParse(txtRevenueID.Text, out int revenueID))
+                    {
+                        MessageBox.Show("RevenueID phải là số nguyên hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    Revenue revenue = new Revenue()
+                    {
+                        RevenueID = revenueID,
+                        RevenueDate = DateTime.Parse(this.txtRevenueDate.Text),
+                        TableRevenue = decimal.Parse(this.txtTableRevenue.Text),
+                        FoodRevenue = decimal.Parse(this.txtFoodRevenue.Text),
+                        DrinkRevenue = decimal.Parse(this.txtDrinkRevenue.Text)
+                    };
+
+                    string errorMessage;
+                    bool f = dbst.ThemRevenue(revenue, out errorMessage);
 
                     if (f)
                     {
                         LoadData();
-                        MessageBox.Show("Đã thêm xong!");
+                        MessageBox.Show("Đã thêm doanh thu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Chưa thêm xong!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Thêm doanh thu thất bại!\nLý do: {errorMessage}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Không thêm được, lỗi rồi!\nThông báo: {ex.Message}\nChi tiết: {ex.StackTrace}",
-                                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Lỗi khi thêm doanh thu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
             {
                 try
                 {
-                    // Cập nhật doanh thu
-                    bool f = dbst.CapNhatDoanhThu(ref err,
-                        int.Parse(this.txtRevenueID.Text),
-                        DateTime.Parse(this.txtRevenueDate.Text),
-                        decimal.Parse(this.txtTableRevenue.Text),
-                        decimal.Parse(this.txtFoodRevenue.Text),
-                        decimal.Parse(this.txtDrinkRevenue.Text)
-                    );
+                    Revenue revenue = new Revenue()
+                    {
+                        RevenueID = int.Parse(this.txtRevenueID.Text),
+                        RevenueDate = DateTime.Parse(this.txtRevenueDate.Text),
+                        TableRevenue = decimal.Parse(this.txtTableRevenue.Text),
+                        FoodRevenue = decimal.Parse(this.txtFoodRevenue.Text),
+                        DrinkRevenue = decimal.Parse(this.txtDrinkRevenue.Text)
+                    };
+
+                    bool f = dbst.SuaRevenue(revenue);
 
                     if (f)
                     {
                         LoadData();
-                        MessageBox.Show("Đã cập nhật xong!");
+                        MessageBox.Show("Đã cập nhật doanh thu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Cập nhật chưa xong!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Cập nhật doanh thu thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                catch (SqlException)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Không cập nhật được, lỗi rồi!");
+                    MessageBox.Show($"Lỗi khi cập nhật doanh thu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
+
 
         private void btnSua_Click(object sender, EventArgs e)
         {
@@ -223,7 +241,7 @@ namespace quanlibida
 
             // Lấy RevenueID từ dòng đang chọn
             int revenueId;
-            if (!int.TryParse(dgvRevenue.CurrentRow.Cells["RevenueID"].Value.ToString(), out revenueId))
+            if (!int.TryParse(dgvRevenue.CurrentRow.Cells["RevenueID"].Value?.ToString(), out revenueId))
             {
                 MessageBox.Show("Mã doanh thu không hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -231,23 +249,24 @@ namespace quanlibida
 
             // Hỏi xác nhận người dùng
             DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa doanh thu có mã {revenueId}?",
-                                                  "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                                   "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
-                string err = "";
-                bool success = dbst.XoaDoanhThu(ref err, revenueId);
+                string errorMessage;
+                bool success = dbst.XoaRevenue(revenueId, out errorMessage);
 
                 if (success)
                 {
-                    LoadData(); // Cập nhật lại danh sách
-                    MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData(); // Load lại danh sách sau khi xóa
+                    MessageBox.Show("Xóa doanh thu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show($"Lỗi khi xóa: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Xóa doanh thu thất bại!\nLý do: {errorMessage}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
         }
 
         private void btnHuyBo_Click(object sender, EventArgs e)

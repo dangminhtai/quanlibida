@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using BusinessAccessLayer;
-
+using BLLCustomer;
 namespace quanlibida
 {
     public partial class KhachHangTheoDiaChi : Form
     {
         private string keyword;
-        private BAL bllKhachHang = new BAL();
+        private CustomerBLL bllKhachHang = new CustomerBLL();
         public KhachHangTheoDiaChi(string keyword)
         {
             InitializeComponent();
@@ -26,8 +26,8 @@ namespace quanlibida
         {
             try
             {
-                DataSet ds = bllKhachHang.KhachHangTheoDiaChi(keyword);
-                dgvAddress.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+                var ds = bllKhachHang.KhachHangTheoDiaChi(keyword);
+                dgvAddress.DataSource = ds; 
             }
             catch (Exception ex)
             {

@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLStaff;
 namespace quanlibida
 {
     public partial class LuongNhanVienNhoHon : Form
     {
         private decimal luongMax;
-        private BAL bllNhanVien = new BAL();
+        private StaffBLL bllNhanVien = new StaffBLL();
         public LuongNhanVienNhoHon(decimal luongMax)
         {
             InitializeComponent();
@@ -25,8 +25,8 @@ namespace quanlibida
         {
             try
             {
-                DataSet ds = bllNhanVien.LayNhanVienTheoLuongMax(luongMax);
-                dgvNam.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+                var ds = bllNhanVien.LayNhanVienTheoLuongMax(luongMax);
+                dgvNam.DataSource = ds; // Đổ dữ liệu vào DataGridView
             }
             catch (Exception ex)
             {

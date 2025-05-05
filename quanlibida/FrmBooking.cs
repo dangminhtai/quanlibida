@@ -3,12 +3,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLBooking;
+using DAL;
+using System.Collections.Generic;
 namespace quanlibida
 {
     public partial class FrmBooking : Form
     {
-        BAL dbst;
+       BookingBLL dbst= new BookingBLL();
         // Đối tượng đưa dữ liệu vào DataTable dtBooking 
         public static DataTable dtBooking { get; set; }
         // Khai báo biến kiểm tra việc Thêm hay Sửa dữ liệu 
@@ -16,7 +18,7 @@ namespace quanlibida
         public FrmBooking()
         {
             InitializeComponent();
-            dbst = new BAL();
+        
         }
         void LoadData()
         {
@@ -26,9 +28,9 @@ namespace quanlibida
                 // Vận chuyển dữ liệu vào DataTable dtBooking 
                 dtBooking = new DataTable();
                 dtBooking.Clear();
-                dtBooking = dbst.LayBooking().Tables[0];
-                // Đưa dữ liệu lên DataGridView  
-                dgvBooking.DataSource = dtBooking;
+                List<Booking> listBooking = dbst.LayBooking();
+                dgvBooking.DataSource = listBooking;
+
 
                 // Xóa trống các đối tượng trong Panel 
 
@@ -101,6 +103,7 @@ namespace quanlibida
             this.btnSua.Enabled = false;
             this.btnXoa.Enabled = false;
             this.txtBookingID.Enabled = true;
+            this.txtIDKH.Enabled = true;
             this.txtBookingID.Focus();
         }
 
@@ -141,27 +144,31 @@ namespace quanlibida
 
             if (result == DialogResult.Yes)
             {
-                string err = "";
-                
+                string err = string.Empty;
                 bool success = dbst.XoaBooking(ref err, bookingID);
 
                 if (success)
                 {
-                    dgvBooking.Rows.Remove(dgvBooking.CurrentRow); // Xóa trên giao diện
-                    MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //dgvBooking.Rows.Remove(dgvBooking.CurrentRow);
+                    var list = dgvBooking.DataSource as List<Booking>;
+                    var selectedItem = (Booking)dgvBooking.CurrentRow.DataBoundItem;
+
+                    list.Remove(selectedItem);
+                    dgvBooking.DataSource = null;
+                    dgvBooking.DataSource = list;
+
+                    MessageBox.Show("✅ Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show($"Lỗi khi xóa: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"❌ Không thể xóa booking!\nLỗi: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
+
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            string err = "";
-            bool f = false;
-
             try
             {
                 string bookingID = txtBookingID.Text.Trim();
@@ -171,37 +178,52 @@ namespace quanlibida
                 decimal moneyDV = decimal.Parse(txt_OrderDV.Text);
                 string tableType = txt_tableType.Text.Trim();
 
-                // Kiểm tra điều kiện thời gian
                 if (bookingTimeEnd < bookingTimeStart)
                 {
                     MessageBox.Show("Thời gian vào không được phép lớn hơn thời gian ra!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return; // Dừng hàm, không thực hiện tiếp
+                    return;
                 }
 
-                if (Them) // Thêm mới booking
+                Booking booking = new Booking
                 {
-                    f = dbst.ThemBooking(ref err, bookingID, maKH, bookingTimeStart, bookingTimeEnd, moneyDV, tableType);
-                    if (f)
-                        MessageBox.Show("Đã thêm booking thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    BookingID = bookingID,
+                    MaKH = maKH,
+                    BookingTimeStart = bookingTimeStart,
+                    BookingTimeEnd = bookingTimeEnd,
+                    MoneyDV = moneyDV,
+                    TableType = tableType
+                };
+
+                string err = string.Empty;
+                bool success = false;
+
+                if (Them)
+                {
+                    success = dbst.ThemBooking(ref err, booking);
+                    if (success)
+                        MessageBox.Show("✅ Đã thêm booking thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     else
-                        MessageBox.Show("Thêm booking thất bại!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"❌ Thêm booking thất bại!\nLỗi: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else // Cập nhật booking
+                else
                 {
-                    f = dbst.SuaBooking(ref err, bookingID, maKH, bookingTimeStart, bookingTimeEnd, moneyDV, tableType);
-                    if (f)
-                        MessageBox.Show("Đã cập nhật booking thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    success = dbst.SuaBooking(ref err, booking);
+                    if (success)
+                        MessageBox.Show("✅ Đã cập nhật booking thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     else
-                        MessageBox.Show("Cập nhật booking thất bại!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"❌ Cập nhật booking thất bại!\nLỗi: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                if (f) LoadData(); // Load lại dữ liệu sau khi thao tác thành công
+                if (success)
+                    LoadData();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi xảy ra: {ex.Message}\nChi tiết: {ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"⚠️ Lỗi xảy ra: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         private void btnReLoad_Click(object sender, EventArgs e)
         {

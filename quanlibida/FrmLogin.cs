@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
-using BLL;
+using BLLTaiKhoan;
 
 namespace quanlibida
 {
@@ -36,9 +36,16 @@ namespace quanlibida
             }
             else
             {
+                // Đăng nhập thành công!
                 IsAuthenticated = true;
                 Username = user;
-                this.Close();
+
+                this.Hide(); // Ẩn Form Login trước
+
+                MainFrm main = new MainFrm(); // Tạo MainForm mới
+                main.ShowDialog(); // Mở MainForm
+
+                this.Close(); // Đóng Form Login sau khi MainForm đóng
             }
         }
 

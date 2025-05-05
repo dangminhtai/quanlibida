@@ -2,16 +2,17 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
+using BLLStaff;
+using DAL;
 namespace quanlibida
 {
     public partial class Staffquery : Form
     {
-        BAL dbst2;
+        StaffBLL dbst2 = new StaffBLL(); // Khởi tạo đối tượng StaffBLL
 
         public Staffquery() // Constructor mới
         {
             InitializeComponent();
-            dbst2 = new BAL();
         }
         
         private void label2_Click(object sender, EventArgs e)
@@ -36,17 +37,16 @@ namespace quanlibida
         {
             try
             {
-                // Gọi stored procedure để lấy nhân viên làm việc lâu nhất
-                DataTable dt = dbst2.TimNhanVienLauNhat();
+                // Gọi phương thức để lấy nhân viên làm lâu nhất
+                Staff staff = dbst2.TimNhanVienLauNhat();
 
-                if (dt.Rows.Count > 0)
+                if (staff != null)
                 {
-                    DataRow row = dt.Rows[0];
-                    string maNV = row["MaNV"].ToString();
-                    string tenNV = row["Name"].ToString();
-                    string enter = Convert.ToDateTime(row["Enter"]).ToString("dd/MM/yyyy");
+                    string maNV = staff.MaNV.ToString();
+                    string tenNV = staff.Name;
+                    string enter = staff.Enter.ToString("dd/MM/yyyy");
 
-                    MessageBox.Show($" Nhân viên làm việc lâu nhất\n\n"
+                    MessageBox.Show($"Nhân viên làm việc lâu nhất\n\n"
                                   + $"🆔 Mã nhân viên: {maNV}\n"
                                   + $"👤 Tên nhân viên: {tenNV}\n"
                                   + $"📅 Ngày vào làm: {enter}",
@@ -71,6 +71,7 @@ namespace quanlibida
             }
         }
 
+
         private void btntimkiem2_Click(object sender, EventArgs e)
         {
             // Lấy giá trị năm từ textbox
@@ -90,17 +91,16 @@ namespace quanlibida
         {
             try
             {
-                // Gọi stored procedure để lấy nhân viên làm việc lâu nhất
-                DataTable dt = dbst2.TimNhanVienMoiLam();
+                // Gọi phương thức để lấy nhân viên mới vào làm
+                Staff staff = dbst2.TimNhanVienMoiLam();
 
-                if (dt.Rows.Count > 0)
+                if (staff != null)
                 {
-                    DataRow row = dt.Rows[0];
-                    string maNV = row["MaNV"].ToString();
-                    string tenNV = row["Name"].ToString();
-                    string enter = Convert.ToDateTime(row["Enter"]).ToString("dd/MM/yyyy");
+                    string maNV = staff.MaNV.ToString();
+                    string tenNV = staff.Name;
+                    string enter = staff.Enter.ToString("dd/MM/yyyy");
 
-                    MessageBox.Show($" Nhân viên mới vào làm \n\n"
+                    MessageBox.Show($"Nhân viên mới vào làm\n\n"
                                   + $"🆔 Mã nhân viên: {maNV}\n"
                                   + $"👤 Tên nhân viên: {tenNV}\n"
                                   + $"📅 Ngày vào làm: {enter}",
@@ -124,6 +124,7 @@ namespace quanlibida
                                 MessageBoxIcon.Error);
             }
         }
+
 
         private void btntimkiem4_Click(object sender, EventArgs e)
         {

@@ -3,12 +3,12 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLCustomer;
 namespace quanlibida
 {
     public partial class FrmUser : Form
     {
-        BAL dbst;
+        CustomerBLL dbst = new CustomerBLL();
         // Đối tượng đưa dữ liệu vào DataTable dtUser 
         public static DataTable dtUser { get; set; }
         // Khai báo biến kiểm tra việc Thêm hay Sửa dữ liệu 
@@ -17,34 +17,37 @@ namespace quanlibida
         {
 
             InitializeComponent();
-            dbst = new BAL();
+            
         }
         void LoadData()
         {
             try
             {
-               
                 // Vận chuyển dữ liệu vào DataTable dtUser 
-                dtUser = new DataTable();
-                dtUser.Clear();
-                dtUser = dbst.LayKhachHang().Tables[0];
-                // Đưa dữ liệu lên DataGridView  
-                dgvUser.DataSource = dtUser;
+                // KHÔNG cần tạo mới dtUser ở đây nữa nếu đã xài Entity Framework
+                // dtUser = new DataTable(); dtUser.Clear(); ==> bỏ
+
+                dgvUser.DataSource = dbst.LayKhachHang(); // Gán List<Customer> vào DataGridView trực tiếp
 
                 // Xóa trống các đối tượng trong Panel 
-
                 this.txtNameKH.ResetText();
                 this.txtMaKH.ResetText();
+
                 // Không cho thao tác trên các nút Lưu / Hủy 
                 this.btnLuu.Enabled = false;
                 this.btnHuyBo.Enabled = false;
                 this.panel.Enabled = false;
+
                 // Cho thao tác trên các nút Thêm / Sửa / Xóa / Thoát 
                 this.btnThem.Enabled = true;
                 this.btnSua.Enabled = true;
                 this.btnXoa.Enabled = true;
                 this.btnTroVe.Enabled = true;
-                dgvUser_CellClick(null, null);
+
+                if (dgvUser.Rows.Count > 0)
+                {
+                    dgvUser_CellClick(new object(), new DataGridViewCellEventArgs(0, 0)); // click vào dòng đầu tiên cho chắc
+                }
             }
             catch (SqlException ex)
             {
@@ -57,6 +60,7 @@ namespace quanlibida
                                 "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void FrmUser_Load(object sender, EventArgs e)
         {
@@ -78,19 +82,22 @@ namespace quanlibida
 
         }
 
-        
+
 
         private void dgvUser_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Thứ tự dòng hiện hành 
-            int r = dgvUser.CurrentCell.RowIndex;
-            // Chuyển thông tin lên panel 
-            this.txtMaKH.Text = dgvUser.Rows[r].Cells["maKH"].Value.ToString();
-            this.txtNameKH.Text=dgvUser.Rows[r].Cells["hoTen"].Value.ToString();
-            this.txtSDT.Text = dgvUser.Rows[r].Cells["soDienThoai"].Value.ToString();
-            this.txtAddress.Text = dgvUser.Rows[r].Cells["diaChi"].Value.ToString();
-            this.txtAmount.Text = dgvUser.Rows[r].Cells["tienTichLuy"].Value.ToString();
+            if (e?.RowIndex >= 0 && e.RowIndex < dgvUser.Rows.Count)
+            {
+                DataGridViewRow row = dgvUser.Rows[e.RowIndex];
+                txtMaKH.Text = row.Cells["maKH"].Value?.ToString() ?? "";
+                txtNameKH.Text = row.Cells["hoTen"].Value?.ToString() ?? "";
+                txtSDT.Text = row.Cells["soDienThoai"].Value?.ToString() ?? "";
+                txtAddress.Text = row.Cells["diaChi"].Value?.ToString() ?? "";
+                txtAmount.Text = row.Cells["tienTichLuy"].Value?.ToString() ?? "";
+            }
         }
+
+
 
         private void btnThem_Click(object sender, EventArgs e)
         {
@@ -264,9 +271,11 @@ namespace quanlibida
 
                 if (success)
                 {
-                    dgvUser.Rows.Remove(dgvUser.CurrentRow); // Xóa luôn trên giao diện
+                    // Load lại danh sách sau khi xóa
+                    dgvUser.DataSource = dbst.LayKhachHang();
                     MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+
                 else
                 {
                     MessageBox.Show($"Lỗi khi xóa: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);

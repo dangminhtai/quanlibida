@@ -2,16 +2,19 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
+using BLLRevenue;
+using System.Linq;
+using DAL;
 
 namespace quanlibida
 {
     public partial class Revenuequery : Form
     {
-        BAL dbst2;
+        RevenueBLL dbst2= new RevenueBLL();
         public Revenuequery()
         {
             InitializeComponent();
-            dbst2 = new BAL();
+     
         }
 
         private void Revenuequery_Load(object sender, EventArgs e)
@@ -23,52 +26,42 @@ namespace quanlibida
         {
             try
             {
-                // Kiểm tra xem người dùng đã nhập dữ liệu chưa
                 if (string.IsNullOrWhiteSpace(txtTable_start.Text) || string.IsNullOrWhiteSpace(txtTable_end.Text))
                 {
                     MessageBox.Show("Vui lòng nhập đầy đủ ngày bắt đầu và ngày kết thúc.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Chuyển đổi TextBox thành DateTime
-                DateTime startDate, endDate;
-                if (!DateTime.TryParse(txtTable_start.Text, out startDate) || !DateTime.TryParse(txtTable_end.Text, out endDate))
+                if (!DateTime.TryParse(txtTable_start.Text, out DateTime startDate) || !DateTime.TryParse(txtTable_end.Text, out DateTime endDate))
                 {
                     MessageBox.Show("Ngày nhập vào không hợp lệ. Vui lòng nhập đúng định dạng mm/dd/yyyy.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
                 if (startDate > endDate)
                 {
                     MessageBox.Show("Ngày bắt đầu không thể lớn hơn ngày kết thúc.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Gọi phương thức từ lớp BLL
-                DataSet ds = dbst2.TinhTongDoanhThuThueBan(startDate, endDate);
+                decimal tongDoanhThu = dbst2.TinhTongDoanhThuThueBan(startDate, endDate);
 
-                // Kiểm tra nếu có dữ liệu
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (tongDoanhThu > 0)
                 {
-                    object value = ds.Tables[0].Rows[0]["TongDoanhThuThueBan"];
-
-                    // Kiểm tra nếu giá trị là DBNull thì gán thành 0
-                    decimal tongDoanhThu = value == DBNull.Value ? 0 : Convert.ToDecimal(value);
-
                     MessageBox.Show($"Tổng doanh thu từ thuê bàn: {tongDoanhThu:N0} VND", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         private void txtTable_start_TextChanged(object sender, EventArgs e)
         {
@@ -87,8 +80,7 @@ namespace quanlibida
                 }
 
                 // Chuyển đổi TextBox thành DateTime
-                DateTime startDate, endDate;
-                if (!DateTime.TryParse(txtFood_start.Text, out startDate) || !DateTime.TryParse(txtFood_end.Text, out endDate))
+                if (!DateTime.TryParse(txtFood_start.Text, out DateTime startDate) || !DateTime.TryParse(txtFood_end.Text, out DateTime endDate))
                 {
                     MessageBox.Show("Ngày nhập vào không hợp lệ. Vui lòng nhập đúng định dạng mm/dd/yyyy.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -101,24 +93,17 @@ namespace quanlibida
                     return;
                 }
 
-                // Gọi phương thức từ lớp BLL
-                DataSet ds = dbst2.TinhTongDoanhThuThueDoAn(startDate, endDate);
+                // Gọi phương thức từ lớp BLL (trả về 1 số, không còn là danh sách nữa)
+                decimal tongDoanhThu = dbst2.TinhTongDoanhThuThueDoAn(startDate, endDate);
 
-                // Kiểm tra nếu có dữ liệu
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (tongDoanhThu > 0)
                 {
-                    object value = ds.Tables[0].Rows[0]["TongDoanhThuThueDoAn"];
-
-                    // Kiểm tra nếu giá trị là DBNull thì gán thành 0
-                    decimal tongDoanhThu = value == DBNull.Value ? 0 : Convert.ToDecimal(value);
-
                     MessageBox.Show($"Tổng doanh thu từ thuê đồ ăn: {tongDoanhThu:N0} VND", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-
             }
             catch (Exception ex)
             {
@@ -126,50 +111,40 @@ namespace quanlibida
             }
         }
 
+
+
         private void btn3_Click(object sender, EventArgs e)
         {
             try
             {
-                // Kiểm tra xem người dùng đã nhập dữ liệu chưa
                 if (string.IsNullOrWhiteSpace(txtDrink_start.Text) || string.IsNullOrWhiteSpace(txtDrink_end.Text))
                 {
                     MessageBox.Show("Vui lòng nhập đầy đủ ngày bắt đầu và ngày kết thúc.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Chuyển đổi TextBox thành DateTime
-                DateTime startDate, endDate;
-                if (!DateTime.TryParse(txtDrink_start.Text, out startDate) || !DateTime.TryParse(txtDrink_end.Text, out endDate))
+                if (!DateTime.TryParse(txtDrink_start.Text, out DateTime startDate) || !DateTime.TryParse(txtDrink_end.Text, out DateTime endDate))
                 {
                     MessageBox.Show("Ngày nhập vào không hợp lệ. Vui lòng nhập đúng định dạng mm/dd/yyyy.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
                 if (startDate > endDate)
                 {
                     MessageBox.Show("Ngày bắt đầu không thể lớn hơn ngày kết thúc.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Gọi phương thức từ lớp BLL
-                DataSet ds = dbst2.TinhTongDoanhThuThueThucUong(startDate, endDate);
+                decimal tongDoanhThu = dbst2.TinhTongDoanhThuThueThucUong(startDate, endDate);
 
-                // Kiểm tra nếu có dữ liệu
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (tongDoanhThu > 0)
                 {
-                    object value = ds.Tables[0].Rows[0]["TongDoanhThuThueThucUong"];
-
-                    // Kiểm tra nếu giá trị là DBNull thì gán thành 0
-                    decimal tongDoanhThu = value == DBNull.Value ? 0 : Convert.ToDecimal(value);
-
                     MessageBox.Show($"Tổng doanh thu từ thuê thức uống: {tongDoanhThu:N0} VND", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-
             }
             catch (Exception ex)
             {
@@ -177,50 +152,39 @@ namespace quanlibida
             }
         }
 
+
         private void btn4_Click(object sender, EventArgs e)
         {
             try
             {
-                // Kiểm tra xem người dùng đã nhập dữ liệu chưa
                 if (string.IsNullOrWhiteSpace(txtRevenue_start.Text) || string.IsNullOrWhiteSpace(txtRevenue_end.Text))
                 {
                     MessageBox.Show("Vui lòng nhập đầy đủ ngày bắt đầu và ngày kết thúc.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Chuyển đổi TextBox thành DateTime
-                DateTime startDate, endDate;
-                if (!DateTime.TryParse(txtRevenue_start.Text, out startDate) || !DateTime.TryParse(txtRevenue_end.Text, out endDate))
+                if (!DateTime.TryParse(txtRevenue_start.Text, out DateTime startDate) || !DateTime.TryParse(txtRevenue_end.Text, out DateTime endDate))
                 {
                     MessageBox.Show("Ngày nhập vào không hợp lệ. Vui lòng nhập đúng định dạng mm/dd/yyyy.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
                 if (startDate > endDate)
                 {
                     MessageBox.Show("Ngày bắt đầu không thể lớn hơn ngày kết thúc.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Gọi phương thức từ lớp BLL
-                DataSet ds = dbst2.TinhTongTienTatCaDichVu(startDate, endDate);
+                decimal tongDoanhThu = dbst2.TinhTongTienTatCaDichVu(startDate, endDate);
 
-                // Kiểm tra nếu có dữ liệu
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (tongDoanhThu > 0)
                 {
-                    object value = ds.Tables[0].Rows[0]["TongDoanhThu"];
-
-                    // Kiểm tra nếu giá trị là DBNull thì gán thành 0
-                    decimal tongDoanhThu = value == DBNull.Value ? 0 : Convert.ToDecimal(value);
-
                     MessageBox.Show($"Tổng doanh thu là: {tongDoanhThu:N0} VND", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-
             }
             catch (Exception ex)
             {
@@ -228,51 +192,44 @@ namespace quanlibida
             }
         }
 
+
+
+
+
         private void btn5_Click(object sender, EventArgs e)
         {
             try
             {
-                // Kiểm tra xem người dùng đã nhập dữ liệu chưa
                 if (string.IsNullOrWhiteSpace(txtRevenueday.Text))
                 {
                     MessageBox.Show("Vui lòng nhập đầy đủ ngày.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Chuyển đổi TextBox thành DateTime
-                DateTime Date;
-                if (!DateTime.TryParse(txtRevenueday.Text, out Date))
+                if (!DateTime.TryParse(txtRevenueday.Text, out DateTime date))
                 {
                     MessageBox.Show("Ngày nhập vào không hợp lệ. Vui lòng nhập đúng định dạng mm/dd/yyyy.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-     
+                decimal tongDoanhThu = dbst2.DoanhThuNgay(date);
 
-                // Gọi phương thức từ lớp BLL
-                DataSet ds = dbst2.DoanhThuNgay(Date);
-
-                // Kiểm tra nếu có dữ liệu
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (tongDoanhThu > 0)
                 {
-                    object value = ds.Tables[0].Rows[0]["DoanhThuNgay"];
-
-                    // Kiểm tra nếu giá trị là DBNull thì gán thành 0
-                    decimal tongDoanhThu = value == DBNull.Value ? 0 : Convert.ToDecimal(value);
-
-                    MessageBox.Show($"Tổng doanh thu trong ngày {txtRevenueday.Text} là: {tongDoanhThu:N0} VND", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Tổng doanh thu trong ngày {date:MM/dd/yyyy} là: {tongDoanhThu:N0} VND", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show("Không có dữ liệu doanh thu trong khoảng thời gian này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Không có dữ liệu doanh thu trong ngày này.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         private void btntimkiem1_Click(object sender, EventArgs e)
         {

@@ -2,16 +2,17 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLCustomer;
+using System.Linq;
 namespace quanlibida
 {
     public partial class Userquery : Form
     {
-        BAL dbst2;
+        CustomerBLL dbst2 = new CustomerBLL();
         public Userquery()
         {
             InitializeComponent();
-            dbst2 = new BAL();
+         
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -28,20 +29,21 @@ namespace quanlibida
         {
             try
             {
-                // Gọi stored procedure để lấy khách hàng có nhiều tiền nhất
-                DataTable dt = dbst2.KhachHangNhieuTienNhat();
+                // Gọi phương thức để lấy danh sách khách hàng có tiền tích lũy lớn nhất
+                var khachHangs = dbst2.KhachHangNhieuTienNhat();
 
-                if (dt.Rows.Count > 0)
+                if (khachHangs != null && khachHangs.Count > 0)
                 {
-                    DataRow row = dt.Rows[0];
-                    string maKH = row["maKH"].ToString();
-                    string tenKH = row["hoTen"].ToString();
-                    decimal amount = Convert.ToDecimal(row["tienTichLuy"]);
+                    var khachHang = khachHangs.First(); // Lấy khách hàng đầu tiên trong danh sách
 
-                    MessageBox.Show($" Nhân viên có tiền tích lũy lớn nhất\n\n"
+                    string maKH = khachHang.MaKH.ToString();
+                    string tenKH = khachHang.HoTen;
+                    decimal amount = khachHang.TienTichLuy;
+
+                    MessageBox.Show($"Khách hàng có tiền tích lũy lớn nhất\n\n"
                                   + $"🆔 Mã khách hàng: {maKH}\n"
                                   + $"👤 Tên khách hàng: {tenKH}\n"
-                                  + $" $ Số tiền tích lũy: {amount}",
+                                  + $"💰 Số tiền tích lũy: {amount:C}",
                                   "Thông báo",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Information);
@@ -63,24 +65,27 @@ namespace quanlibida
             }
         }
 
+
+
         private void btntimkiem4_Click(object sender, EventArgs e)
         {
             try
             {
-                // Gọi stored procedure để lấy khách hàng có ít tiền nhất
-                DataTable dt = dbst2.KhachHangItTienNhat();
+                // Gọi phương thức để lấy danh sách khách hàng có ít tiền tích lũy nhất
+                var khachHangs = dbst2.KhachHangItTienNhat();
 
-                if (dt.Rows.Count > 0)
+                if (khachHangs != null && khachHangs.Count > 0)
                 {
-                    DataRow row = dt.Rows[0];
-                    string maKH = row["maKH"].ToString();
-                    string tenKH = row["hoTen"].ToString();
-                    decimal amount = Convert.ToDecimal(row["tienTichLuy"]);
+                    var khachHang = khachHangs.First(); // Lấy khách hàng đầu tiên trong danh sách
 
-                    MessageBox.Show($" Nhân viên có số tiền tích lũy ít nhất\n\n"
+                    string maKH = khachHang.MaKH.ToString();
+                    string tenKH = khachHang.HoTen;
+                    decimal amount = khachHang.TienTichLuy;
+
+                    MessageBox.Show($"Khách hàng có số tiền tích lũy ít nhất\n\n"
                                   + $"🆔 Mã khách hàng: {maKH}\n"
                                   + $"👤 Tên khách hàng: {tenKH}\n"
-                                  + $" $ Số tiền tích lũy: {amount}",
+                                  + $"💰 Số tiền tích lũy: {amount:C}",
                                   "Thông báo",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Information);

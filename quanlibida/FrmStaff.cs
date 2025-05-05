@@ -2,13 +2,14 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using BusinessAccessLayer;
+using BLLStaff;
+using DAL;
 namespace quanlibida
 {
     public partial class FrmStaff : Form
     {
 
-        BAL dbst;
+        StaffBLL dbst = new StaffBLL();
         // Đối tượng đưa dữ liệu vào DataTable dtStaff 
         public static DataTable dtStaff { get; set; }
         // Khai báo biến kiểm tra việc Thêm hay Sửa dữ liệu 
@@ -16,7 +17,7 @@ namespace quanlibida
         public FrmStaff()
         {
             InitializeComponent();
-            dbst = new BAL();
+
         }
         //
         void LoadData()
@@ -28,12 +29,12 @@ namespace quanlibida
                 // Vận chuyển dữ liệu vào DataTable dtStaff 
                 dtStaff = new DataTable();
                 dtStaff.Clear();
-                dtStaff = dbst.LayNhanVien().Tables[0];
-                // Đưa dữ liệu lên DataGridView  
-                dgvSTAFF.DataSource = dtStaff;
+                var listStaff = dbst.LayNhanVien(); // trả về List<Staff>
+                dgvSTAFF.DataSource = listStaff;
+
 
                 // Xóa trống các đối tượng trong Panel 
-              
+
                 this.txtName.ResetText();
                 this.txtGmail.ResetText();
                 // Không cho thao tác trên các nút Lưu / Hủy 
@@ -159,74 +160,73 @@ namespace quanlibida
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            string err = "";
-            if (Them)
+            if (Them) // Nếu đang thêm mới
             {
                 try
                 {
-                    //Lệnh Insert Into
-                    bool f = dbst.ThemNhanVien(ref err,
-                    int.Parse(this.txtMaNV.Text),
-                    this.txtName.Text.ToString(),
-                    decimal.Parse(this.txtSalary.Text),
-                    DateTime.Parse(this.txtEnter.Text),
-                    this.txtGmail.Text.ToString()
-                    );
-                    if (f)
+                    Staff newStaff = new Staff()
                     {
-                        //Load lại dữ liệu trên DataGridView
+                        MaNV = int.Parse(txtMaNV.Text),
+                        Name = txtName.Text,
+                        Salary = decimal.Parse(txtSalary.Text),
+                        Enter = DateTime.Parse(txtEnter.Text),
+                        Email = txtGmail.Text
+                    };
+
+                    string err = "";
+                    bool result = dbst.ThemNhanVien(newStaff, ref err);
+
+                    if (result)
+                    {
                         LoadData();
-                        //Thông báo
-                        MessageBox.Show("Đã Thêm Xong");
+                        MessageBox.Show("Đã thêm nhân viên thành công!");
                     }
                     else
                     {
-                        MessageBox.Show("Chưa thêm xong!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+                        MessageBox.Show("Thêm nhân viên thất bại!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-
                 }
-                catch (Exception ex) {
-                    MessageBox.Show($"Không Thêm được, lỗi rồi! \nThông báo: {ex.Message}\nChi tiết: {ex.StackTrace}",
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Không thêm được, lỗi rồi! \nThông báo: {ex.Message}\nChi tiết: {ex.StackTrace}",
+                                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            else
+            else // Nếu đang cập nhật
             {
                 try
                 {
-                    //Lệnh Insert Into
-                    bool f = dbst.CapNhatNhanVien(
-                    ref err,
-                    int.Parse(this.txtMaNV.Text),  
-                    this.txtName.Text.ToString(),
-                    decimal.Parse(this.txtSalary.Text),
-                    DateTime.Parse(this.txtEnter.Text),
-                    this.txtGmail.Text.ToString()
-                    );
+                    Staff updateStaff = new Staff()
+                    {
+                        MaNV = int.Parse(txtMaNV.Text),
+                        Name = txtName.Text,
+                        Salary = decimal.Parse(txtSalary.Text),
+                        Enter = DateTime.Parse(txtEnter.Text),
+                        Email = txtGmail.Text
+                    };
 
+                    string err = "";
+                    bool result = dbst.CapNhatNhanVien(updateStaff, ref err);
 
-
-
-                    if (f) {
-                        //Load lại dữ liệu trên DataGridView
+                    if (result)
+                    {
                         LoadData();
-                        //Thông báo
-                        MessageBox.Show("Đã cập nhật xong!");
+                        MessageBox.Show("Đã cập nhật nhân viên thành công!");
                     }
                     else
                     {
-                        MessageBox.Show("Cập nhật chưa xong!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Cập nhật nhân viên thất bại!\n\r" + "Lỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                catch (SqlException)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Không cập nhật được, lỗi rồi!");
+                    MessageBox.Show($"Không cập nhật được, lỗi rồi! \nThông báo: {ex.Message}\nChi tiết: {ex.StackTrace}",
+                                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-      
+
 
         private void btnXoa_Click(object sender, EventArgs e)
         {
@@ -239,28 +239,36 @@ namespace quanlibida
             int id;
             if (!int.TryParse(dgvSTAFF.CurrentRow.Cells["MaNV"].Value.ToString(), out id))
             {
-                MessageBox.Show("Mã Nhân Viên không hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Mã nhân viên không hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa nhân viên có mã là {id}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show($"Bạn có chắc muốn xóa nhân viên có mã {id}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
-                string err = "";
-                bool success = dbst.XoaNhanVien(ref err, id);
+                try
+                {
+                    string err = "";
+                    bool success = dbst.XoaNhanVien(id, ref err); // EF6 version: truyền id và ref err
 
-                if (success)
-                {
-                    dgvSTAFF.Rows.Remove(dgvSTAFF.CurrentRow); // Xóa luôn trên giao diện
-                    MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (success)
+                    {
+                        MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadData(); // Reload lại toàn bộ bảng cho chuẩn (tránh lỗi xóa dòng thủ công)
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Xóa thất bại! Lỗi: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi khi xóa: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Lỗi hệ thống khi xóa: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
 
 
 

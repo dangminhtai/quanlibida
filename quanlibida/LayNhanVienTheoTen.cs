@@ -2,13 +2,13 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLStaff;
 namespace quanlibida
 {
     public partial class LayNhanVienTheoTen : Form
     {
         private string name;
-        private BAL bllNhanVien = new BAL();
+        private StaffBLL bllNhanVien = new StaffBLL();
         public LayNhanVienTheoTen(string name)
         {
             InitializeComponent();
@@ -19,8 +19,8 @@ namespace quanlibida
         {
             try
             {
-                DataSet ds = bllNhanVien.LayNhanVienTheoTen(name);
-                dgvNam.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+                var ds = bllNhanVien.LayNhanVienTheoTen(name);
+                dgvNam.DataSource = ds; // Đổ dữ liệu vào DataGridView
             }
             catch (Exception ex)
             {

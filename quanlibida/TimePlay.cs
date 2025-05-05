@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using DAL;
 
 namespace BusinessAccessLayer
 {
@@ -10,10 +12,11 @@ namespace BusinessAccessLayer
         {
             InitializeComponent();
         }
-        public void UpdateDataGrid(DataTable dt)
+        public void UpdateDataGrid(List<Booking> bookings)
         {
-            dgvTime.DataSource = dt;
+            dgvTime.DataSource = bookings;
         }
+
         private void TimePlay_Load(object sender, EventArgs e)
         {
 

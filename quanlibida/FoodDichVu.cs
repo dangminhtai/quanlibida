@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
-using BusinessAccessLayer;
+using BLLDichVu;
+using DAL;
 
 namespace quanlibida
 {
     public partial class FoodDichVu : Form
     {
-        BAL bllDV=new BAL();
+        DichVuBLL bllDV = new DichVuBLL();
         public FoodDichVu()
         {
             InitializeComponent();
@@ -16,8 +18,8 @@ namespace quanlibida
         {
             try
             {
-                DataSet ds = bllDV.LayDichVuTheoThucAn();
-                dgvFood.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+                List<DichVu> danhsachdichvu = bllDV.LayDichVuTheoThucAn();
+                dgvFood.DataSource = danhsachdichvu; // Đổ dữ liệu vào DataGridView
             }
             catch (Exception ex)
             {

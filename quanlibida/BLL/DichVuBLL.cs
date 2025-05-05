@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using DAL;
 
-namespace BLL
+namespace BLLDichVu
 {
     public class DichVuBLL
     {
@@ -49,5 +51,88 @@ namespace BLL
 
             return db.Database.SqlQuery<DichVu>("spTimDichVuTheoTen @TenDV", tenDVParam).ToList();
         }
+        public bool ThemDichVu(string TenDV, string LoaiDV, decimal GiaTien)
+        {
+            try
+            {
+                var tenDVParam = new SqlParameter("@TenDV", TenDV);
+                var loaiDVParam = new SqlParameter("@LoaiDV", LoaiDV);
+                var giaTienParam = new SqlParameter("@GiaTien", GiaTien);
+
+                db.Database.ExecuteSqlCommand(
+                    "EXEC spThemDichVu @TenDV, @LoaiDV, @GiaTien",
+                    tenDVParam, loaiDVParam, giaTienParam
+                );
+
+                return true; // Nếu không có lỗi thì return true
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi thêm dịch vụ: " + ex.Message);
+                return false;
+            }
+        }
+
+
+
+        // 📌 Cập nhật dịch vụ
+        public bool CapNhatDichVu(string TenDV, string LoaiDV, decimal GiaTien)
+        {
+            try
+            {
+                var tenDVParam = new SqlParameter("@TenDV", TenDV);
+                var loaiDVParam = new SqlParameter("@LoaiDV", LoaiDV);
+                var giaTienParam = new SqlParameter("@GiaTien", GiaTien);
+
+                db.Database.ExecuteSqlCommand(
+                    "EXEC spCapNhatDichVu @TenDV, @LoaiDV, @GiaTien",
+                    tenDVParam, loaiDVParam, giaTienParam
+                );
+
+                return true; // Không lỗi thì coi như thành công
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi cập nhật dịch vụ: " + ex.Message);
+                return false;
+            }
+        }
+
+
+        // 📌 Xóa dịch vụ
+        public bool XoaDichVu(string TenDV, string LoaiDV)
+        {
+            try
+            {
+                var tenDVParam = new SqlParameter("@TenDV", TenDV);
+                var loaiDVParam = new SqlParameter("@LoaiDV", LoaiDV);
+                var rowsAffectedParam = new SqlParameter("@RowsAffected", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                db.Database.ExecuteSqlCommand(
+                    "EXEC spXoaDichVu @TenDV, @LoaiDV, @RowsAffected OUTPUT",
+                    tenDVParam, loaiDVParam, rowsAffectedParam
+                );
+
+                int rowsAffected = (int)rowsAffectedParam.Value;
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi xóa dịch vụ: " + ex.Message);
+                return false;
+            }
+        }
+
+        public List<DichVu> LayDichVu()
+        {
+            using (var context = new MyDbContext())
+            {
+                return context.DichVu.ToList(); // đơn giản, chuẩn Entity Framework
+            }
+        }
+
     }
 }

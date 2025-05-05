@@ -3,13 +3,15 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLDichVu;
+using DAL;
+using System.Collections.Generic;
 namespace quanlibida
 {
     public partial class FrmDichVu : Form
     {
 
-        BAL dbst;
+        DichVuBLL dbst=new DichVuBLL();
         // Đối tượng đưa dữ liệu vào DataTable dtDichVu 
         public static DataTable dtDichVu { get; set; }
         // Khai báo biến kiểm tra việc Thêm hay Sửa dữ liệu 
@@ -17,46 +19,54 @@ namespace quanlibida
         public FrmDichVu()
         {
             InitializeComponent();
-            dbst = new BAL();
+        
         }
-        void LoadData()
+        private void LoadData()
         {
             try
             {
-             
-                // Vận chuyển dữ liệu vào DataTable dtDichVu 
-                dtDichVu = new DataTable();
-                dtDichVu.Clear();
-                dtDichVu = dbst.LayDichVu().Tables[0];
-                // Đưa dữ liệu lên DataGridView  
-                dgvDichVu.DataSource = dtDichVu;
+                List<DichVu> listDichVu = dbst.LayDichVu();
+                dgvDichVu.DataSource = listDichVu;
 
-                // Xóa trống các đối tượng trong Panel 
+                ResetInputFields();
 
-                this.txtName.ResetText();
-                this.txtType.ResetText();
-                this.txtPrice.ResetText();
-                // Không cho thao tác trên các nút Lưu / Hủy 
-                this.btnLuu.Enabled = false;
-                this.btnHuyBo.Enabled = false;
-                this.panel.Enabled = false;
-                // Cho thao tác trên các nút Thêm / Sửa / Xóa / Thoát 
-                this.btnThem.Enabled = true;
-                this.btnSua.Enabled = true;
-                this.btnXoa.Enabled = true;
-                this.btnTroVe.Enabled = true;
-                dgvDichVu_CellClick(null, null);
+                btnLuu.Enabled = false;
+                btnHuyBo.Enabled = false;
+                panel.Enabled = false;
+
+                btnThem.Enabled = true;
+                btnSua.Enabled = true;
+                btnXoa.Enabled = true;
+                btnTroVe.Enabled = true;
+
+                if (listDichVu.Count > 0)
+                    dgvDichVu_CellClick(null, null);
             }
             catch (SqlException ex)
             {
-                MessageBox.Show($"Lỗi SQL!\nMã lỗi: {ex.Number}\nThông báo: {ex.Message}\nChi tiết: {ex.StackTrace}",
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowSqlError(ex);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi không xác định!\nThông báo: {ex.Message}\nChi tiết: {ex.StackTrace}",
-                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowGeneralError(ex);
             }
+        }
+
+        private void ResetInputFields()
+        {
+            txtName.ResetText();
+            txtType.ResetText();
+            txtPrice.ResetText();
+        }
+
+        private void ShowSqlError(SqlException ex)
+        {
+            MessageBox.Show($"Lỗi SQL!\nMã lỗi: {ex.Number}\nThông báo: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void ShowGeneralError(Exception ex)
+        {
+            MessageBox.Show($"Lỗi!\nThông báo: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         private void label5_Click(object sender, EventArgs e)
         {
@@ -88,14 +98,14 @@ namespace quanlibida
 
         private void dgvDichVu_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Thứ tự dòng hiện hành 
-            int r = dgvDichVu.CurrentCell.RowIndex;
-            // Chuyển thông tin lên panel 
-            this.txtName.Text = dgvDichVu.Rows[r].Cells["TenDV"].Value.ToString();
-            this.txtType.Text = dgvDichVu.Rows[r].Cells["LoaiDV"].Value.ToString();
-            this.txtPrice.Text = dgvDichVu.Rows[r].Cells["GiaTien"].Value.ToString();
-            
+            if (dgvDichVu.CurrentRow != null)
+            {
+                txtName.Text = dgvDichVu.CurrentRow.Cells["TenDV"].Value?.ToString();
+                txtType.Text = dgvDichVu.CurrentRow.Cells["LoaiDV"].Value?.ToString();
+                txtPrice.Text = dgvDichVu.CurrentRow.Cells["GiaTien"].Value?.ToString();
+            }
         }
+
 
         private void FrmDichVu_Load(object sender, EventArgs e)
         {
@@ -105,63 +115,48 @@ namespace quanlibida
         private void btnLuu_Click(object sender, EventArgs e)
         {
             string err = "";
-            if (Them) // Trường hợp thêm mới
+            try
             {
-                try
-                {
-                    // Lệnh Insert Into
-                    bool f = dbst.ThemDichVu(ref err,
-                        this.txtName.Text.ToString(),
-                        this.txtType.Text.ToString(),
-                        decimal.Parse(this.txtPrice.Text)
-                    );
+                string tenDV = this.txtName.Text.Trim();
+                string loaiDV = this.txtType.Text.Trim();
+                decimal giaTien = decimal.Parse(this.txtPrice.Text);
 
+                bool f = false;
+
+                if (Them) // Thêm mới dịch vụ
+                {
+                    f = dbst.ThemDichVu(tenDV, loaiDV, giaTien);
                     if (f)
                     {
-                        // Load lại dữ liệu trên DataGridView
-                        LoadData();
-                        // Thông báo
-                        MessageBox.Show("Đã thêm dịch vụ thành công!");
+                        LoadData(); // Load lại dữ liệu trên DataGridView
+                        MessageBox.Show("Đã thêm dịch vụ thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Thêm dịch vụ thất bại!\nLỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Thêm dịch vụ thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                catch (Exception ex)
+                else // Cập nhật dịch vụ
                 {
-                    MessageBox.Show($"Không thêm được, lỗi rồi!\nThông báo: {ex.Message}\nChi tiết: {ex.StackTrace}",
-                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    f = dbst.CapNhatDichVu(tenDV, loaiDV, giaTien);
+                    if (f)
+                    {
+                        LoadData(); // Load lại dữ liệu trên DataGridView
+                        MessageBox.Show("Đã cập nhật dịch vụ thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cập nhật dịch vụ thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
-            else // Trường hợp cập nhật
+            catch (FormatException ex)
             {
-                try
-                {
-                    // Lệnh Update
-                    bool f = dbst.CapNhatDichVu(
-                        ref err,
-                        this.txtName.Text.ToString(),
-                        this.txtType.Text.ToString(),
-                        decimal.Parse(this.txtPrice.Text)
-                    );
-
-                    if (f)
-                    {
-                        // Load lại dữ liệu trên DataGridView
-                        LoadData();
-                        // Thông báo
-                        MessageBox.Show("Đã cập nhật dịch vụ thành công!");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Cập nhật dịch vụ thất bại!\nLỗi: " + err, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                catch (SqlException)
-                {
-                    MessageBox.Show("Không cập nhật được, lỗi rồi!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show($"Lỗi định dạng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi xảy ra: {ex.Message}\nChi tiết: {ex.StackTrace}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -202,21 +197,21 @@ namespace quanlibida
 
             if (result == DialogResult.Yes)
             {
-                string err = "";
-               
-                bool success = dbst.XoaDichVu(ref err, tenDV, loaiDV);
+                bool success = dbst.XoaDichVu(tenDV, loaiDV);
 
-                if (success )
+                if (success)
                 {
-                    dgvDichVu.Rows.Remove(dgvDichVu.CurrentRow); // Xóa luôn trên giao diện
                     MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData(); // ✅ Gọi lại hàm load dữ liệu
                 }
                 else
                 {
-                    MessageBox.Show($"Lỗi khi xóa: {err}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Lỗi khi xóa dịch vụ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
+
 
         private void btnReLoad_Click(object sender, EventArgs e)
         {

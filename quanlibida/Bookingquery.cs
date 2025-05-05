@@ -2,12 +2,14 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-using BLL;
+using BLLBooking;
+using DAL;
+using System.Collections.Generic;
 namespace quanlibida
 {
     public partial class Bookingquery : Form
     {
-        BAL dbst2=new BAL();
+        BookingBLL dbst2 = new BookingBLL();
         public Bookingquery()
         {
             InitializeComponent();
@@ -20,20 +22,14 @@ namespace quanlibida
                 // Lấy mã khách hàng từ TextBox
                 int maKH = int.Parse(txtID.Text.Trim());
 
-                // Gọi Stored Procedure để lấy thông tin thời gian chơi
-                DataTable dt = dbst2.TinhThoiGianChoiKH(maKH);
+                // Gọi Stored Procedure để lấy tổng thời gian chơi (trả về số phút)
+                int tongThoiGianPhut = dbst2.TinhThoiGianChoiKH(maKH);
 
-                if (dt.Rows.Count > 0)
+                if (tongThoiGianPhut > 0)
                 {
-                    DataRow row = dt.Rows[0];
-                    string tenKH = row["hoTen"].ToString();
-                    string diaChi = row["diaChi"].ToString();
-                    int tongThoiGianPhut = Convert.ToInt32(row["TongThoiGianChoi_Phut"]);
-
-                    MessageBox.Show($" 🆔 Mã khách hàng: {maKH}\n"
-                                  + $" 👤 Tên khách hàng: {tenKH}\n"
-                                  + $" 📍 Địa chỉ: {diaChi}\n"
-                                  + $" ⏳ Tổng thời gian chơi: {tongThoiGianPhut} phút",
+                    // Nếu bạn cần thêm tên, địa chỉ,... thì phải có SP khác trả ra đủ thông tin
+                    MessageBox.Show($"🆔 Mã khách hàng: {maKH}\n"
+                                  + $"⏳ Tổng thời gian chơi: {tongThoiGianPhut} phút",
                                   "Thông tin khách hàng",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Information);
@@ -54,6 +50,7 @@ namespace quanlibida
                                 MessageBoxIcon.Error);
             }
         }
+
 
         private void btnquery_Click(object sender, EventArgs e)
         {
@@ -85,20 +82,19 @@ namespace quanlibida
                     return;
                 }
 
-                DataSet ds = dbst2.LocKhachHangTheoDichVuNhoHon(soTien);
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                List<Booking> bookings = dbst2.LocKhachHangTheoDichVuNhoHon(soTien);
+                if (bookings.Count > 0)
                 {
                     // Kiểm tra nếu Form2 đã mở
                     TimePlay frm2 = Application.OpenForms["TimePlay"] as TimePlay;
                     if (frm2 != null)
                     {
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Gọi phương thức cập nhật dữ liệu
+                        frm2.UpdateDataGrid(bookings); // UpdateDataGrid nhận List<Booking>
                     }
                     else
                     {
-                        // Nếu Form2 chưa mở, tạo mới và truyền dữ liệu
                         frm2 = new TimePlay();
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Truyền dữ liệu vào dgvTime của Form2
+                        frm2.UpdateDataGrid(bookings);
                         frm2.Show();
                     }
                 }
@@ -117,8 +113,8 @@ namespace quanlibida
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
             }
-;
         }
+
         private void btn3_Click(object sender, EventArgs e)
         {
             try
@@ -130,20 +126,19 @@ namespace quanlibida
                     return;
                 }
 
-                DataSet ds = dbst2.LocKhachHangTheoDichVuLonHon(soTien);
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                List<Booking> bookings = dbst2.LocKhachHangTheoDichVuLonHon(soTien);
+                if (bookings.Count > 0)
                 {
                     // Kiểm tra nếu Form2 đã mở
                     TimePlay frm2 = Application.OpenForms["TimePlay"] as TimePlay;
                     if (frm2 != null)
                     {
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Gọi phương thức cập nhật dữ liệu
+                        frm2.UpdateDataGrid(bookings); // UpdateDataGrid nhận List<Booking>
                     }
                     else
                     {
-                        // Nếu Form2 chưa mở, tạo mới và truyền dữ liệu
                         frm2 = new TimePlay();
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Truyền dữ liệu vào dgvTime của Form2
+                        frm2.UpdateDataGrid(bookings);
                         frm2.Show();
                     }
                 }
@@ -163,7 +158,7 @@ namespace quanlibida
                                 MessageBoxIcon.Error);
             }
         }
-  
+
 
         private void txtNam_TextChanged(object sender, EventArgs e)
         {
@@ -186,27 +181,26 @@ namespace quanlibida
                     return;
                 }
 
-                DataSet ds = dbst2.LocKhachHangChoiHonKPhut(soPhut);
+                List<Booking> bookings = dbst2.LocKhachHangChoiHonKPhut(soPhut);
 
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (bookings.Count > 0)
                 {
                     // Kiểm tra nếu Form2 đã mở
                     TimePlay frm2 = Application.OpenForms["TimePlay"] as TimePlay;
                     if (frm2 != null)
                     {
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Gọi phương thức cập nhật dữ liệu
+                        frm2.UpdateDataGrid(bookings); // Cập nhật List<Booking>
                     }
                     else
                     {
-                        // Nếu Form2 chưa mở, tạo mới và truyền dữ liệu
                         frm2 = new TimePlay();
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Truyền dữ liệu vào dgvTime của Form2
+                        frm2.UpdateDataGrid(bookings);
                         frm2.Show();
                     }
                 }
                 else
                 {
-                    MessageBox.Show("❌ Không tìm thấy khách hàng nào chơi hơn " + soPhut + " phút!",
+                    MessageBox.Show($"❌ Không tìm thấy khách hàng nào chơi hơn {soPhut} phút!",
                                     "Thông báo",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
@@ -220,6 +214,7 @@ namespace quanlibida
                                 MessageBoxIcon.Error);
             }
         }
+
 
         private void btntimkiem4_Click(object sender, EventArgs e)
         {
@@ -232,27 +227,28 @@ namespace quanlibida
                     return;
                 }
 
-                DataSet ds = dbst2.LocKhachHangChoiNhoHonKPhut(soPhut);
+                // Lọc khách hàng chơi ít hơn số phút
+                List<Booking> bookings = dbst2.LocKhachHangChoiNhoHonKPhut(soPhut);
 
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                if (bookings.Count > 0)
                 {
                     // Kiểm tra nếu Form2 đã mở
                     TimePlay frm2 = Application.OpenForms["TimePlay"] as TimePlay;
                     if (frm2 != null)
                     {
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Gọi phương thức cập nhật dữ liệu
+                        frm2.UpdateDataGrid(bookings); // Cập nhật dữ liệu vào dgvTime
                     }
                     else
                     {
                         // Nếu Form2 chưa mở, tạo mới và truyền dữ liệu
                         frm2 = new TimePlay();
-                        frm2.UpdateDataGrid(ds.Tables[0]); // Truyền dữ liệu vào dgvTime của Form2
+                        frm2.UpdateDataGrid(bookings);
                         frm2.Show();
                     }
                 }
                 else
                 {
-                    MessageBox.Show("❌ Không tìm thấy khách hàng nào chơi hơn " + soPhut + " phút!",
+                    MessageBox.Show($"❌ Không tìm thấy khách hàng nào chơi ít hơn {soPhut} phút!",
                                     "Thông báo",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
@@ -266,6 +262,7 @@ namespace quanlibida
                                 MessageBoxIcon.Error);
             }
         }
+
 
         private void btnview_Click(object sender, EventArgs e)
         {

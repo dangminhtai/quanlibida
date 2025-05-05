@@ -23,8 +23,9 @@ namespace quanlibida
 
                 if (loginForm.IsAuthenticated) // Nếu đăng nhập thành công
                 {
-                    Application.Run(new MainFrm()); // Mở form chính
-              
+                    //Application.Run(new MainFrm()); // Mở form chính
+                    //Application.Run(new FrmDichVu());
+
                 }
             }
         }

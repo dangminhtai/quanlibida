@@ -2,13 +2,13 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLCustomer;
 namespace quanlibida
 {
     public partial class KhachHangTheoTen : Form
     {
         private string name;
-        private BAL bllKhachHang = new BAL();
+        private CustomerBLL bllKhachHang = new CustomerBLL();
         public KhachHangTheoTen(string name)
         {
 
@@ -20,8 +20,8 @@ namespace quanlibida
         {
             try
             {
-                DataSet ds = bllKhachHang.LayKhachHangTheoTen(name);
-                dgvAddress.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+                var ds = bllKhachHang.LayKhachHangTheoTen(name);
+                dgvAddress.DataSource = ds;// Đổ dữ liệu vào DataGridView
             }
             catch (Exception ex)
             {

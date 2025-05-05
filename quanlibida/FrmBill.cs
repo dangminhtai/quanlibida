@@ -7,12 +7,13 @@ using System.Text;
 using System.Windows.Forms;
 using BusinessAccessLayer;
 using QRCoder;
+using BLLBill;
 
 namespace quanlibida
 {
     public partial class FrmBill : Form
     {
-        BAL dbbill=new BAL();
+        BillBLL dbbill = new BillBLL();
         private string hoaDonText = "";
         private PrintDocument printDocument = new PrintDocument();
         private string tenKH, diaChi;
@@ -34,7 +35,7 @@ namespace quanlibida
         {
 
         }
-       
+
         private void btnprint_Click(object sender, EventArgs e)
         {
             try
@@ -45,16 +46,16 @@ namespace quanlibida
                     return;
                 }
 
-                DataTable dt = dbbill.TinhTongTienPhaiTra(maKH);
-                if (dt.Rows.Count > 0)
+                var billInfo = dbbill.GetBillInfo(maKH);
+                if (billInfo != null && billInfo.TongTienPhaiTra > 0)
                 {
-                    DataRow row = dt.Rows[0];
-                    tenKH = row["hoTen"].ToString();
-                    diaChi = row["diaChi"].ToString();
-                    tongPhutChoi = Convert.ToInt32(row["TongPhutChoi"]);
-                    tienBan = Convert.ToDecimal(row["TienBan"]);
-                    tienDV = Convert.ToDecimal(row["TongTienDV"]);
-                    tongTien = Convert.ToDecimal(row["TongTienPhaiTra"]);
+                    // Gán cho biến toàn cục để in
+                    this.tenKH = billInfo.hoTen;
+                    this.diaChi = billInfo.diaChi;
+                    this.tongPhutChoi = billInfo.TongPhutChoi;
+                    this.tienBan = billInfo.TienBan;
+                    this.tienDV = billInfo.TongTienDV;
+                    this.tongTien = billInfo.TongTienPhaiTra;
 
                     PrintPreviewDialog previewDialog = new PrintPreviewDialog
                     {
@@ -66,7 +67,7 @@ namespace quanlibida
                 }
                 else
                 {
-                    MessageBox.Show("❌ Không tìm thấy thông tin khách hàng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("❌ Không tìm thấy thông tin khách hàng hoặc khách hàng chưa phát sinh chi phí!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -74,6 +75,8 @@ namespace quanlibida
                 MessageBox.Show("⚠️ Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         private void PrintDocument_PrintPage(object sender, PrintPageEventArgs e)
         {

@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BusinessAccessLayer;
+using BLLDichVu;
+using DAL;
 
 namespace quanlibida
 {
     public partial class DrinkDichVu : Form
     {
-        BAL bllDV= new
-            BAL();
+        DichVuBLL bllDV = new DichVuBLL();
         public DrinkDichVu()
         {
             InitializeComponent();
@@ -28,14 +28,15 @@ namespace quanlibida
         {
             try
             {
-                DataSet ds = bllDV.LayDichVuTheoThucUong();
-                dgvDrink.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+                List<DichVu> danhsachdichvu = bllDV.LayDichVuTheoThucUong();
+                dgvDrink.DataSource = danhsachdichvu; // Đổ dữ liệu vào DataGridView
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void dgvDrinkDichVu_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 

@@ -2,13 +2,13 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLStaff;
 namespace quanlibida
 {
     public partial class LuongNhanVienLonHon : Form
     {
         private decimal luongMin;
-        private BAL bllNhanVien = new BAL();
+        private StaffBLL bllNhanVien = new StaffBLL();
         public LuongNhanVienLonHon(decimal luongMin)
         {
             InitializeComponent();
@@ -19,8 +19,8 @@ namespace quanlibida
         {
             try
             {
-                DataSet ds = bllNhanVien.LayNhanVienTheoLuongMin(luongMin);
-                dgvLuongLonHon.DataSource = ds.Tables[0]; // Đổ dữ liệu vào DataGridView
+               var ds = bllNhanVien.LayNhanVienTheoLuongMin(luongMin);
+                dgvLuongLonHon.DataSource = ds; // Đổ dữ liệu vào DataGridView
             }
             catch (Exception ex)
             {

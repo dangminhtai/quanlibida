@@ -2,12 +2,12 @@
 using System.Data;
 using System.Windows.Forms;
 using BusinessAccessLayer;
-
+using BLLBooking;
 namespace quanlibida
 {
     public partial class TableType : Form
     {
-        private BAL db = new BAL();
+        private BookingBLL db = new BookingBLL();
 
         public TableType()
         {
@@ -30,10 +30,10 @@ namespace quanlibida
             string loaiBan = cboxtype.SelectedItem.ToString();
 
             // Gọi BLL để lấy danh sách khách hàng theo loại bàn
-            DataSet ds = db.LocKhachHangTheoBan(loaiBan);
+            var ds = db.LocKhachHangTheoBan(loaiBan);
 
             // Hiển thị lên DataGridView
-            dgvtype.DataSource = ds.Tables[0];
+            dgvtype.DataSource = ds;
         }
 
         private void dgvtype_CellContentClick(object sender, DataGridViewCellEventArgs e)

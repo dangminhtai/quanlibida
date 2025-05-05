@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
-using BusinessAccessLayer;
+using BLLDichVu;
+using DAL;
 
 namespace quanlibida
 {
     public partial class DichVuTheoGia : Form
     {
-        BAL bllDV=new BAL();
+        DichVuBLL bllDV = new DichVuBLL();
         public DichVuTheoGia()
         {
             InitializeComponent();
@@ -21,10 +23,10 @@ namespace quanlibida
                 decimal giaMax = Convert.ToDecimal(txtend.Text);
 
                 // Gọi phương thức lấy dữ liệu
-                DataSet ds = bllDV.LayDichVuTheoGia(giaMin, giaMax);
+                List<DichVu> danhSachDichVu = bllDV.LayDichVuTheoGia(giaMin, giaMax);
 
                 // Đổ dữ liệu vào DataGridView
-                dgvPrice.DataSource = ds.Tables[0];
+                dgvPrice.DataSource = danhSachDichVu;
             }
             catch (FormatException)
             {

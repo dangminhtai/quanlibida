@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
-using BusinessAccessLayer;
+using BLLDichVu;
+using DAL;
 
 namespace quanlibida
 {
     public partial class Dichvuquery : Form
     {
-        BAL dbst2;
+        DichVuBLL dbst2 = new DichVuBLL();
         public Dichvuquery()
         {
             InitializeComponent();
-            dbst2 = new BAL();
+          
         }
 
         private void btntimkiem1_Click(object sender, EventArgs e)
@@ -30,20 +32,15 @@ namespace quanlibida
         {
             try
             {
-                DataTable dt = dbst2.TimDichVuCoGiaTienLonNhat(); // Gọi stored procedure
+                DichVu dichVu = dbst2.TimDichVuCoGiaTienLonNhat(); // Gọi stored procedure
 
-                if (dt.Rows.Count > 0)
+                if (dichVu != null)
                 {
-                    DataRow row = dt.Rows[0]; // Lấy dòng đầu tiên (dịch vụ có giá cao nhất)
-                    string tenDV = row["TenDV"].ToString();
-                    string loaiDV = row["LoaiDV"].ToString();
-                    decimal giaTien = Convert.ToDecimal(row["GiaTien"]);
-
                     // Hiển thị thông tin bằng MessageBox
                     MessageBox.Show($"📌 Dịch vụ có giá cao nhất\n\n"
-                                  + $"🛎️ Tên dịch vụ: {tenDV}\n"
-                                  + $"📌 Loại dịch vụ: {loaiDV}\n"
-                                  + $"💰 Giá tiền: {giaTien:N0} VND",
+                                  + $"🛎️ Tên dịch vụ: {dichVu.TenDV}\n"
+                                  + $"📌 Loại dịch vụ: {dichVu.LoaiDV}\n"
+                                  + $"💰 Giá tiền: {dichVu.GiaTien:N0} VND",
                                   "Thông báo",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Information);
@@ -66,6 +63,7 @@ namespace quanlibida
         }
 
 
+
         private void btntimkiem4_Click(object sender, EventArgs e)
         {
             DichVuTheoGia frm = new DichVuTheoGia();
@@ -76,20 +74,15 @@ namespace quanlibida
         {
             try
             {
-                DataTable dt = dbst2.TimDichVuCoGiaTienThapNhat(); // Gọi stored procedure
+                DichVu dichVu = dbst2.TimDichVuCoGiaTienThapNhat(); // Gọi stored procedure
 
-                if (dt.Rows.Count > 0)
+                if (dichVu != null)
                 {
-                    DataRow row = dt.Rows[0]; // Lấy dòng đầu tiên (dịch vụ có giá thấp nhất)
-                    string tenDV = row["TenDV"].ToString();
-                    string loaiDV = row["LoaiDV"].ToString();
-                    decimal giaTien = Convert.ToDecimal(row["GiaTien"]);
-
                     // Hiển thị thông tin bằng MessageBox
                     MessageBox.Show($"📌 Dịch vụ có giá thấp nhất\n\n"
-                                  + $"🛎️ Tên dịch vụ: {tenDV}\n"
-                                  + $"📌 Loại dịch vụ: {loaiDV}\n"
-                                  + $"💰 Giá tiền: {giaTien:N0} VND",
+                                  + $"🛎️ Tên dịch vụ: {dichVu.TenDV}\n"
+                                  + $"📌 Loại dịch vụ: {dichVu.LoaiDV}\n"
+                                  + $"💰 Giá tiền: {dichVu.GiaTien:N0} VND",
                                   "Thông báo",
                                   MessageBoxButtons.OK,
                                   MessageBoxIcon.Information);
